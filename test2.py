@@ -34,6 +34,7 @@ class Pad(tk.Frame):
         self.current_font_ID = config.default_font
         self.current_font = self.create_font(self.current_font_ID)
 
+
         # Creates a bold font
         # self.default_font = Font(
         #     self,
@@ -63,13 +64,13 @@ class Pad(tk.Frame):
         self.text.pack(fill="both", expand=True)
 
         # configuring a tag called BOLD
-        for font in config.fonts.keys():
+        for font in set(select(font.id for font in db.Font)):
             self.text.tag_configure(font, font=self.create_font(font))
         # self.text.tag_configure('current', font=self.current_font)
         # self.text.tag_configure("bold", font=self.bold_font)
         # self.text.tag_configure("italic", font=self.italic_font)
 
-        for color in config.colors:
+        for color in set(select(color.id for color in db.Color)):
             self.text.tag_configure(f'{color}_fore', foreground=color)
             self.text.tag_configure(f'{color}_back', background=color)
 

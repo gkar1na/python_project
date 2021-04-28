@@ -51,11 +51,11 @@ overstrikes = {
 }
 
 colors = {
-    '#ff0000',
-    '#00ff00',
-    '#0000ff',
-    '#000000',
-    '#ffffff'
+    '#ff0000': 'red',
+    '#00ff00': 'green',
+    '#0000ff': 'blue',
+    '#000000': 'black',
+    '#ffffff': 'white'
 }
 
 fonts = {

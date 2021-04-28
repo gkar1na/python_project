@@ -7,7 +7,7 @@
 
 from pony.orm import *
 from datetime import datetime
-from config import fonts
+from config import fonts, colors
 
 date_format = '%d.%m.%y %H:%M:%S'
 
@@ -24,11 +24,28 @@ class Font(db.Entity):
     overstrike = Required(str)
     date = Required(str)
 
+class Color(db.Entity):
+    id = PrimaryKey(str)
+    name = Required(str)
+    date = Required(str)
+
 
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 set_sql_debug(True)
 db.generate_mapping(create_tables=True)
 
+
+@db_session
+def add_colors(colors: dict):
+    old_colors_id = set(select(color.id for color in Color))
+
+    for ID in colors.keys():
+        if ID not in old_colors_id:
+            Color(
+                id=ID,
+                name=colors[ID],
+                date=datetime.now().strftime(date_format)
+            )
 
 
 @db_session
@@ -52,5 +69,6 @@ def add_fonts(fonts: dict):
 
 
 add_fonts(fonts)
+add_colors(colors)
 
 commit()
