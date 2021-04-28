@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from tkinter.font import Font, ROMAN
+date_format = '%d.%m.%y %H:%M:%S'
 
+path_to_errors = 'errors'
+path_to_logging = 'logging'
 
-default_font = 'Helvetica.12.n.r.0.0'
+default_font = 'Calibri.12.n.r.0.0'
 default_foreground_color = '#000000'
 default_background_color = '#ffffff'
 
@@ -59,8 +61,8 @@ colors = {
 }
 
 fonts = {
-}
 
+}
 for family in families:
     for size in sizes:
         for weight in weights:

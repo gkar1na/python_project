@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# !/usr/bin/env python
-# coding: utf-8
-
 
 from pony.orm import *
 from datetime import datetime
-from config import fonts, colors
+import config
 
-date_format = '%d.%m.%y %H:%M:%S'
 
 db = Database()
 
 
 class Font(db.Entity):
+    """Font table"""
     id = PrimaryKey(str)
     family = Required(str)
     size = Required(str)
@@ -24,12 +21,15 @@ class Font(db.Entity):
     overstrike = Required(str)
     date = Required(str)
 
+
 class Color(db.Entity):
+    """Color table."""
     id = PrimaryKey(str)
     name = Required(str)
     date = Required(str)
 
 
+# Create db
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 set_sql_debug(True)
 db.generate_mapping(create_tables=True)
@@ -37,23 +37,29 @@ db.generate_mapping(create_tables=True)
 
 @db_session
 def add_colors(colors: dict):
+    """Update the color table following the information from config"""
+    # Old color ids
     old_colors_id = set(select(color.id for color in Color))
 
+    # Add new colors
     for ID in colors.keys():
         if ID not in old_colors_id:
             Color(
                 id=ID,
                 name=colors[ID],
-                date=datetime.now().strftime(date_format)
+                date=datetime.now().strftime(config.date_format)
             )
+            old_colors_id.add(ID)
 
 
 @db_session
 def add_fonts(fonts: dict):
+    """Update the font table following the information from config"""
+    # Old font ids
     old_fonts_id = set(select(font.id for font in Font))
 
+    # Add new fonts
     for ID in fonts.keys():
-
         if ID not in old_fonts_id:
             Font(
                 id=ID,
@@ -63,12 +69,17 @@ def add_fonts(fonts: dict):
                 slant=fonts[ID]['slant'],
                 underline=fonts[ID]['underline'],
                 overstrike=fonts[ID]['overstrike'],
-                date=datetime.now().strftime(date_format)
+                date=datetime.now().strftime(config.date_format)
             )
             old_fonts_id.add(ID)
 
 
-add_fonts(fonts)
-add_colors(colors)
+def update():
+    """Update the tables."""
+    add_fonts(config.fonts)
+    add_colors(config.colors)
+    commit()
 
-commit()
+
+if __name__ == "__main__":
+    update()
