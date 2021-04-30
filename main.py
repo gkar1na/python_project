@@ -42,7 +42,7 @@ class Pad(tk.Frame):
         self.text_field.focus()
 
         # Create a scrollbar and associate it with the text field
-        self.scrollbar_obj = tk.Scrollbar(command=self.text_field.yview)
+        self.scrollbar_obj = tk.Scrollbar(master=root, command=self.text_field.yview)
         self.scrollbar_obj.pack(side="right", fill='y')
         self.text_field['yscrollcommand'] = self.scrollbar_obj.set
 
