@@ -6,6 +6,7 @@ from tkinter.font import Font
 from pony.orm import *
 import config, db, change, create
 from datetime import datetime
+from right_menu import RightMenu
 
 @db_session
 class Pad(tk.Frame):
@@ -130,6 +131,9 @@ class Pad(tk.Frame):
         # Bind to action()
         self.root.bind("<Key>", self.action)
         self.root.bind("<ButtonRelease>", self.action)
+
+        # Right Menu initialization
+        self.right_menu = RightMenu(self.root, self.text_field)
 
     def close_window(self):
         """Close an old independent window."""
