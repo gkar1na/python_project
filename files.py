@@ -34,8 +34,8 @@ class FileOperator:
     defaults = {
         'font': _d[0],
         'size': int(_d[1]),
-        'bold': int(_d[2] != 'n'),
-        'italic': int(_d[3] != 'r'),
+        'bold': int(_d[2] != 'normal'),
+        'italic': int(_d[3] != 'roman'),
         'underline': int(_d[4]),
         'overstrike': int(_d[5]),
         'f_color': config.default_foreground_color,
@@ -53,8 +53,8 @@ class Parser(FileOperator):
     def _params_to_tags(self, params: dict):
         """Converts parameters dict into set of string tags"""
         tags = set()
-        params['bold'] = 'b' if params['bold'] else 'n'
-        params['italic'] = 'i' if params['italic'] else 'r'
+        params['bold'] = 'bold' if params['bold'] else 'normal'
+        params['italic'] = 'italic' if params['italic'] else 'roman'
         font = '.'.join(map(str, [params[k] for k in list(params)[:-2]]))
         if font != self.d_font:
             tags.add(font)
@@ -129,8 +129,8 @@ class Serializer(FileOperator):
                 p = tag.split('.')
                 params['font'] = p[0]
                 params['size'] = int(p[1])
-                params['bold'] = int(p[2] != 'n')
-                params['italic'] = int(p[3] != 'r')
+                params['bold'] = int(p[2] != 'normal')
+                params['italic'] = int(p[3] != 'roman')
                 params['underline'] = int(p[4])
                 params['overstrike'] = int(p[5])
         return params
@@ -163,13 +163,13 @@ def test():
     s = Serializer()
     text = [{'char': 'a',
              'index': '3.1',
-             'tags': {'Arial.16.b.i.1.1'}},
+             'tags': {'Arial.16.bold.italic.1.1'}},
             {'char': 'b',
              'index': '3.2',
-             'tags': {'Arial.16.b.i.1.1'}},
+             'tags': {'Arial.16.bold.italic.1.1'}},
             {'char': 'c',
              'index': '3.3',
-             'tags': {'Arial.14.b.i.0.1'}}]
+             'tags': {'Arial.14.bold.italic.0.1'}}]
     s.serialize('test.txt', text)
     p = Parser()
     assert p.parse('test.txt') == text
