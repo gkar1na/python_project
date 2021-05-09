@@ -9,6 +9,7 @@ import pickle
 import os
 import db
 import subprocess
+import files
 
 
 class Pad(tk.Frame):
@@ -80,7 +81,7 @@ class Pad(tk.Frame):
         self.main_menu.add_cascade(label="Файл", menu=self.menu_item_file)
 
         self.menu_item_file.add_command(label="Открыть...", command=self.open_window)
-        self.menu_item_file.add_command(label="Создать", command=new_window)
+        self.menu_item_file.add_command(label="Создать", command=self.new_window)
         self.menu_item_file.add_command(label="Сохранить...", command=self.save_to_file)
 
         self.menu_item_file.add_separator()
@@ -193,6 +194,24 @@ class Pad(tk.Frame):
 
     def open_window(self):
         """Open a new independent window from an existing file."""
+        file_name = 'test.txt'
+        p = files.Parser()
+        input_data = p.parse(file_name)
+        print(input_data)
+        self.text_field.delete('1.0', tk.END)
+        self.right_menu.index = '1.0'
+        self.right_menu.buffer_tags = []
+        self.right_menu.buffer_selected = []
+
+        for data in input_data:
+            self.right_menu.buffer_tags.append(data['tags'])
+            self.right_menu.buffer_selected.append(data['char'])
+
+        self.right_menu.buffer_selected = ''.join(self.right_menu.buffer_selected)
+        print('-'*100)
+        print(self.right_menu.buffer_tags)
+        self.right_menu.paste(True)
+        print(input_data)
         print('open_window')
 
 
@@ -208,13 +227,18 @@ class Pad(tk.Frame):
             })
             index = self.text_field.index(f'{index}+1c')
         print(output_data)
+
+        file_name = 'test.txt'
+        s = files.Serializer()
+        s.serialize(file_name, output_data)
+
         print('save_to_file')
 
 
-def new_window():
-    """Again run main.py."""
-    subprocess.Popen(['python3', 'main.py'])
-
+    def new_window(self):
+        """Again run main.py."""
+        # subprocess.Popen(['python3', 'main.py'])
+        self.text_field.delete('1.0', tk.END)
 
 def create_window():
     """Create and update a new independent window."""

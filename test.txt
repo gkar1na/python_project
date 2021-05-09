@@ -1,0 +1,25 @@
+T<cf:#ff0000>e<u:1>s<b:1>t<i:1> <s:24>te<cf:#00ff00><cb:#0000ff>xt
+qwe<cf:#ff0000><cb:#ffffff>rtyuiop
+asd<s:12>fghjkl
+zxc<i:0>v<b:0><cb:#00ff00>b<u:0>n<cf:#000000><cb:#ffffff>m<cb:#0000ff>
+<cb:#ffffff>
+
+
+T<cf:#ff0000>e<u:1>s<b:1>t<i:1> <s:24>te<cf:#00ff00><cb:#0000ff>xt
+qwe<cf:#ff0000><cb:#ffffff>rtyuiop
+asd<s:12>fghjkl
+zxc<i:0>v<b:0><cb:#00ff00>b<u:0>n<cf:#000000><cb:#ffffff>m<cb:#0000ff>
+<cb:#ffffff>
+
+
+
+T<cf:#ff0000>e<u:1>s<b:1>t<i:1> <s:24>te<cf:#00ff00><cb:#0000ff>xt
+qwe<cf:#ff0000><cb:#ffffff>rtyuiop
+asd<s:12>fghjkl
+zxc<i:0>v<b:0><cb:#00ff00>b<u:0>n<s:60><cf:#000000><cb:#ffffff>m<s:12><cb:#0000ff>
+<cb:#ffffff>
+
+
+
+
+

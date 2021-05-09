@@ -27,32 +27,40 @@ class RightMenu:
         """Show right click menu."""
         self.menu.tk_popup(e.x_root, e.y_root)
 
-    def paste(self, *args, **kwargs):
+    def paste(self, flag=False, *args, **kwargs):
         """Paste function."""
-        index = self.text_field.index(tk.INSERT)
-        self.text_field.insert(index, self.buffer_selected)
+        if flag:
+            num_index = 0
+            while num_index < len(self.buffer_selected):
+                self.text_field.insert(self.index, self.buffer_selected[num_index])
+                for tag in self.buffer_tags[num_index]:
+                    self.text_field.tag_add(tag, self.index)
+                self.index = self.text_field.index(f'{self.index}+1c')
+                num_index += 1
+        else:
+            index = self.text_field.index(tk.INSERT)
+            self.text_field.insert(index, self.buffer_selected)
+            num_index = 0
+            while self.text_field.compare(index, '<', tk.INSERT):
 
-        num_index = 0
-        while self.text_field.compare(index, '<', tk.INSERT):
+                # Remove all tags
+                flag = True
+                while flag:
+                    tags = self.text_field.tag_names(index)
+                    tag = None
+                    for i in range(len(tags)):
+                        if (tags[i].find('_') != -1 and tags[i].find('#') != -1) or (tags[i].find('.') != -1):
+                            tag = tags[i]
+                            break
+                    if tag:
+                        self.text_field.tag_remove(tag, index)
+                    else:
+                        flag = False
 
-            # Remove all tags
-            flag = True
-            while flag:
-                tags = self.text_field.tag_names(index)
-                tag = None
-                for i in range(len(tags)):
-                    if (tags[i].find('_') != -1 and tags[i].find('#') != -1) or (tags[i].find('.') != -1):
-                        tag = tags[i]
-                        break
-                if tag:
-                    self.text_field.tag_remove(tag, index)
-                else:
-                    flag = False
-
-            for tag in self.buffer_tags[num_index]:
-                self.text_field.tag_add(tag, index)
-            index = self.text_field.index(f'{index}+1c')
-            num_index += 1
+                for tag in self.buffer_tags[num_index]:
+                    self.text_field.tag_add(tag, index)
+                index = self.text_field.index(f'{index}+1c')
+                num_index += 1
 
     def copy(self, delete=False, *args, **kwargs):
         """Copy function."""
