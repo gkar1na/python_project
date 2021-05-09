@@ -11,6 +11,7 @@ def family(text_field: tk.Text, family: str, size: str, weight: str, slant: str,
     Change the family to a new one.
     Return new parameters."""
     family = new_family
+    print('LOGGING: change family')
     return family, size, weight, slant, underline, overstrike
 
 
@@ -19,6 +20,7 @@ def size(text_field: tk.Text, family: str, size: str, weight: str, slant: str, u
     Resize to a new one.
     Return new parameters."""
     size = new_size
+    print('LOGGING: change size')
     return family, size, weight, slant, underline, overstrike
 
 
@@ -26,7 +28,8 @@ def weight(text_field: tk.Text, family: str, size: str, weight: str, slant: str,
     """Get all the old parameters.
     Change the weight condition.
     Return new parameters."""
-    weight = 'b' if weight == 'n' else 'n'
+    weight = 'bold' if weight == 'normal' else 'normal'
+    print('LOGGING: change weight')
     return family, size, weight, slant, underline, overstrike
 
 
@@ -34,7 +37,7 @@ def slant(text_field: tk.Text, family: str, size: str, weight: str, slant: str, 
     """Get all the old parameters.
     Change the slant condition.
     Return new parameters."""
-    slant = 'r' if slant == 'i' else 'i'
+    slant = 'roman' if slant == 'italic' else 'italic'
     return family, size, weight, slant, underline, overstrike
 
 
@@ -79,6 +82,7 @@ def color(text_field: tk.Text, family: str, size: str, weight: str, slant: str, 
     else:
         text_field.tag_add(f'{new_color}_{ground}', index)
 
+    print('LOGGING: change color')
     # Return new parameters
     return family, size, weight, slant, underline, overstrike
 

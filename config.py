@@ -6,7 +6,7 @@ date_format = '%d.%m.%y %H:%M:%S'
 path_to_errors = 'errors'
 path_to_logging = 'logging'
 
-default_font = 'Calibri.12.n.r.0.0'
+default_font = 'Calibri.12.normal.roman.0.0'
 default_foreground_color = '#000000'
 default_background_color = '#ffffff'
 
@@ -70,7 +70,7 @@ for family in families:
                 for underline in underlines:
                     for overstrike in overstrikes:
                         fonts.update([(
-                            f'{family}.{size}.{weight[0]}.{slant[0]}.{underline}.{overstrike}',
+                            f'{family}.{size}.{weight}.{slant}.{underline}.{overstrike}',
                             {
                                 'family': family,
                                 'size': size,

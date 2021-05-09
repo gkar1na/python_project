@@ -2,15 +2,17 @@
 # coding: utf-8
 
 import tkinter as tk
-from tkinter.font import Font
-from pony.orm import *
-import config, db, change, create
+import config, change, create
 from datetime import datetime
 from right_menu import RightMenu
+import pickle
+import os
+import db
 
-@db_session
+
 class Pad(tk.Frame):
     def __init__(self, root: tk.Tk, *args, **kwargs):
+        global n
         """Create a toolbar, the text field and the scrollbar.
         Configure the text field."""
         tk.Frame.__init__(self, root, *args, **kwargs)
@@ -19,11 +21,11 @@ class Pad(tk.Frame):
         self.root = root
 
         # Create and pack the toolbar
-        self.toolbar = tk.Frame(self, bg="#eee")
+        self.toolbar = tk.Frame(self.root, bg="#eee")
         self.toolbar.pack(side="top", fill="x")
 
         # Create the text field into the window
-        self.text_field = tk.Text(self)
+        self.text_field = tk.Text(root)
 
         # Configure the text field
         # Configure default font from config
@@ -31,11 +33,28 @@ class Pad(tk.Frame):
         self.text_field.insert("end", "Test text\nqwertyuiop\nasdfghjkl\nzxcvbnm")
 
         # Configure font tags from db
-        for font_id in set(select(font.id for font in db.Font)):
-            self.text_field.tag_configure(font_id, font=create.font(font_id))
+        # Font ids
+        if not os.path.exists('database/Font_ID.pkl'):
+            db.update_database()
+
+        with open('database/Font_ID.pkl', 'rb') as f:
+            font_ids = pickle.load(f)
+
+        for font_id in font_ids:
+            # print(font_id)
+            self.text_field.tag_configure(f'{font_id}', font=create.font(font_id))
 
         # Configure color tags from db
-        for color in set(select(color.id for color in db.Color)):
+        # Color ids
+        if os.path.exists('database/Color.pkl'):
+            with open('database/Color.pkl', 'rb') as f:
+                with open('database/Color.pkl', 'rb') as f:
+                    color_ids = pickle.load(f)
+        else:
+            color_ids = set()
+            with open('database/Color.pkl', 'wb') as f:
+                pickle.dump(color_ids, f)
+        for color in color_ids:
             self.text_field.tag_configure(f'{color}_fore', foreground=color)
             self.text_field.tag_configure(f'{color}_back', background=color)
 
@@ -43,7 +62,7 @@ class Pad(tk.Frame):
         self.text_field.focus()
 
         # Create a scrollbar and associate it with the text field
-        self.scrollbar_obj = tk.Scrollbar(master=root, command=self.text_field.yview)
+        self.scrollbar_obj = tk.Scrollbar(root, command=self.text_field.yview)
         self.scrollbar_obj.pack(side="right", fill='y')
         self.text_field['yscrollcommand'] = self.scrollbar_obj.set
 
@@ -60,9 +79,9 @@ class Pad(tk.Frame):
         self.menu_item_file = tk.Menu(self.main_menu)
         self.main_menu.add_cascade(label="Файл", menu=self.menu_item_file)
 
-        self.menu_item_file.add_command(label="Открыть...", command=self.open_window)
+        self.menu_item_file.add_command(label="Открыть...", command=open_window)
         self.menu_item_file.add_command(label="Создать", command=create_window)
-        self.menu_item_file.add_command(label="Сохранить...", command=self.save_to_file)
+        self.menu_item_file.add_command(label="Сохранить...", command=save_to_file)
 
         self.menu_item_file.add_separator()
 
@@ -137,6 +156,7 @@ class Pad(tk.Frame):
 
     def close_window(self):
         """Close an old independent window."""
+
         self.root.destroy()
 
     def about(self):
@@ -167,24 +187,32 @@ class Pad(tk.Frame):
         # Print all information about the symbol
         finally:
             index = self.text_field.index(tk.INSERT)
-            print(f'current cursor position: {index} - "{self.text_field.get(index)}", tags: {self.text_field.tag_names(index)}')
+            tag = self.text_field.tag_names(index)
+            print(f'current cursor position: {index} - "{self.text_field.get(index)}", tags: {tag}')
 
-    def open_window(self):
-        """Open a new independent window from an existing file."""
-        print('open_window')
 
-    def save_to_file(self):
-        """Save the text field with all information about all symbols to a new file."""
-        print('save_to_file')
+def open_window():
+    """Open a new independent window from an existing file."""
+    print('open_window')
+
+
+def save_to_file():
+    """Save the text field with all information about all symbols to a new file."""
+    print('save_to_file')
 
 
 def create_window():
+    global n
     """Create and update a new independent window."""
     root = tk.Tk()
-    root.title("Текстовый редактор")
+    if not n:
+        print('first')
+    n += 1
+    root.title(f"Текстовый редактор {n}")
     Pad(root).pack(expand=1, fill="both")
     root.mainloop()
 
 
 if __name__ == "__main__":
+    n = 0
     create_window()

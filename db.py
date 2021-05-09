@@ -2,84 +2,59 @@
 # coding: utf-8
 
 
-from pony.orm import *
-from datetime import datetime
 import config
+import pickle
+import os
 
 
-db = Database()
-
-
-class Font(db.Entity):
-    """Font table"""
-    id = PrimaryKey(str)
-    family = Required(str)
-    size = Required(str)
-    weight = Required(str)
-    slant = Required(str)
-    underline = Required(str)
-    overstrike = Required(str)
-    date = Required(str)
-
-
-class Color(db.Entity):
-    """Color table."""
-    id = PrimaryKey(str)
-    name = Required(str)
-    date = Required(str)
-
-
-# Create db
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-set_sql_debug(True)
-db.generate_mapping(create_tables=True)
-
-
-@db_session
 def add_colors(colors: dict):
     """Update the color table following the information from config"""
     # Old color ids
-    old_colors_id = set(select(color.id for color in Color))
+    if os.path.exists('database/Color.pkl'):
+        with open('database/Color.pkl', 'rb') as f:
+            color_ids = pickle.load(f)
+    else:
+        color_ids = set()
+        with open('database/Color.pkl', 'wb') as f:
+            pickle.dump(color_ids, f)
 
     # Add new colors
     for ID in colors.keys():
-        if ID not in old_colors_id:
-            Color(
-                id=ID,
-                name=colors[ID],
-                date=datetime.now().strftime(config.date_format)
-            )
-            old_colors_id.add(ID)
+        if ID not in color_ids:
+            color_ids.add(ID)
+
+    with open('database/Color.pkl', 'wb') as f:
+        pickle.dump(color_ids, f)
 
 
-@db_session
-def add_fonts(fonts: dict):
+def add_font_ids(fonts: dict):
     """Update the font table following the information from config"""
     # Old font ids
-    old_fonts_id = set(select(font.id for font in Font))
+    if os.path.exists('database/Font_ID.pkl'):
+        with open('database/Font_ID.pkl', 'rb') as f:
+            font_ids = pickle.load(f)
+    else:
+        font_ids = set()
+        with open('database/Font_ID.pkl', 'wb') as f:
+            pickle.dump(font_ids, f)
 
     # Add new fonts
     for ID in fonts.keys():
-        if ID not in old_fonts_id:
-            Font(
-                id=ID,
-                family=fonts[ID]['family'],
-                size=fonts[ID]['size'],
-                weight=fonts[ID]['weight'],
-                slant=fonts[ID]['slant'],
-                underline=fonts[ID]['underline'],
-                overstrike=fonts[ID]['overstrike'],
-                date=datetime.now().strftime(config.date_format)
-            )
-            old_fonts_id.add(ID)
+        if ID not in font_ids:
+            font_ids.add(ID)
+    # print(font_ids)
+    with open('database/Font_ID.pkl', 'wb') as f:
+        pickle.dump(font_ids, f)
 
 
-def update():
+def update_database():
     """Update the tables."""
-    add_fonts(config.fonts)
+    add_font_ids(config.fonts)
+    print('LOGGING: font ids updated successfully')
     add_colors(config.colors)
-    commit()
+    print('LOGGING: colors updated successfully')
+    print('LOGGING: database updated successfully')
 
 
 if __name__ == "__main__":
-    update()
+    update_database()
