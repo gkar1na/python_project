@@ -79,9 +79,9 @@ class Pad(tk.Frame):
         self.menu_item_file = tk.Menu(self.main_menu)
         self.main_menu.add_cascade(label="Файл", menu=self.menu_item_file)
 
-        self.menu_item_file.add_command(label="Открыть...", command=open_window)
+        self.menu_item_file.add_command(label="Открыть...", command=self.open_window)
         self.menu_item_file.add_command(label="Создать", command=new_window)
-        self.menu_item_file.add_command(label="Сохранить...", command=save_to_file)
+        self.menu_item_file.add_command(label="Сохранить...", command=self.save_to_file)
 
         self.menu_item_file.add_separator()
 
@@ -191,17 +191,28 @@ class Pad(tk.Frame):
             print(f'current cursor position: {index} - "{self.text_field.get(index)}", tags: {tag}')
 
 
-def open_window():
-    """Open a new independent window from an existing file."""
-    print('open_window')
+    def open_window(self):
+        """Open a new independent window from an existing file."""
+        print('open_window')
 
 
-def save_to_file():
-    """Save the text field with all information about all symbols to a new file."""
-    print('save_to_file')
+    def save_to_file(self):
+        """Save the text field with all information about all symbols to a new file."""
+        output_data = []
+        index = '1.0'
+        while self.text_field.compare(index, '<', 'end'):
+            output_data.append({
+                'char': self.text_field.get(index),
+                'index': index,
+                'tags': self.text_field.tag_names(index)
+            })
+            index = self.text_field.index(f'{index}+1c')
+        print(output_data)
+        print('save_to_file')
 
 
 def new_window():
+    """Again run main.py."""
     subprocess.Popen(['python3', 'main.py'])
 
 
