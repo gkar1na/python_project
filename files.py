@@ -95,9 +95,6 @@ class Parser(FileOperator):
                     while text[k] != '>':
                         k += 1
                     self._update_params(text[m: k], params)
-            elif text[k] == '\n':
-                i += 1
-                j = 1
             else:
                 char_el = {
                     'char': text[k],
@@ -106,6 +103,9 @@ class Parser(FileOperator):
                 }
                 char_list.append(char_el)
                 j += 1
+                if text[k] == '\n':
+                    i += 1
+                    j = 1
             k += 1
         return char_list
 
@@ -138,14 +138,8 @@ class Serializer(FileOperator):
     def serialize(self, f_name: str, char_list: list):
         """Converts character list into text and saves it to file"""
         f = open(f_name, 'w')
-        line = 1
         cur_params = self._tags_to_params(set())
         for char_el in char_list:
-            char_line = int(char_el['index'].split('.')[0])
-            if char_line > line:
-                for i in range(line, char_line):
-                    line += 1
-                    f.write('\n')
             char_params = self._tags_to_params(char_el['tags'])
             for param in char_params:
                 if char_params[param] != cur_params[param]:
@@ -162,17 +156,18 @@ def test():
     """Function to test classes' operability"""
     s = Serializer()
     text = [{'char': 'a',
-             'index': '3.1',
+             'index': '1.1',
              'tags': {'Arial.16.bold.italic.1.1'}},
-            {'char': 'b',
-             'index': '3.2',
+            {'char': '\n',
+             'index': '1.2',
              'tags': {'Arial.16.bold.italic.1.1'}},
             {'char': 'c',
-             'index': '3.3',
+             'index': '2.1',
              'tags': {'Arial.14.bold.italic.0.1'}}]
     s.serialize('test.txt', text)
     p = Parser()
-    assert p.parse('test.txt') == text
+    res = p.parse('test.txt')
+    assert res == text
 
 
 if __name__ == '__main__':
