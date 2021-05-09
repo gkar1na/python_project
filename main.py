@@ -8,11 +8,11 @@ from right_menu import RightMenu
 import pickle
 import os
 import db
+import subprocess
 
 
 class Pad(tk.Frame):
     def __init__(self, root: tk.Tk, *args, **kwargs):
-        global n
         """Create a toolbar, the text field and the scrollbar.
         Configure the text field."""
         tk.Frame.__init__(self, root, *args, **kwargs)
@@ -80,7 +80,7 @@ class Pad(tk.Frame):
         self.main_menu.add_cascade(label="Файл", menu=self.menu_item_file)
 
         self.menu_item_file.add_command(label="Открыть...", command=open_window)
-        self.menu_item_file.add_command(label="Создать", command=create_window)
+        self.menu_item_file.add_command(label="Создать", command=new_window)
         self.menu_item_file.add_command(label="Сохранить...", command=save_to_file)
 
         self.menu_item_file.add_separator()
@@ -201,18 +201,17 @@ def save_to_file():
     print('save_to_file')
 
 
+def new_window():
+    subprocess.Popen(['python3', 'main.py'])
+
+
 def create_window():
-    global n
     """Create and update a new independent window."""
     root = tk.Tk()
-    if not n:
-        print('first')
-    n += 1
-    root.title(f"Текстовый редактор {n}")
+    root.title(f"Текстовый редактор")
     Pad(root).pack(expand=1, fill="both")
     root.mainloop()
 
 
 if __name__ == "__main__":
-    n = 0
     create_window()
