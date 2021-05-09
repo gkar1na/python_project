@@ -52,16 +52,17 @@ class Parser(FileOperator):
 
     def _params_to_tags(self, params: dict):
         """Converts parameters dict into set of string tags"""
+        _params = dict(params)
         tags = set()
-        params['bold'] = 'bold' if params['bold'] else 'normal'
-        params['italic'] = 'italic' if params['italic'] else 'roman'
-        font = '.'.join(map(str, [params[k] for k in list(params)[:-2]]))
+        _params['bold'] = 'bold' if _params['bold'] else 'normal'
+        _params['italic'] = 'italic' if _params['italic'] else 'roman'
+        font = '.'.join(map(str, [_params[k] for k in list(_params)[:-2]]))
         if font != self.d_font:
             tags.add(font)
-        if params['f_color'] != self.d_f_color:
-            tags.add(params['f_color'] + '_fore')
-        if params['b_color'] != self.d_b_color:
-            tags.add(params['b_color'] + '_back')
+        if _params['f_color'] != self.d_f_color:
+            tags.add(_params['f_color'] + '_fore')
+        if _params['b_color'] != self.d_b_color:
+            tags.add(_params['b_color'] + '_back')
         return tags
 
     def _update_params(self, tag: str, params: dict):
@@ -77,7 +78,7 @@ class Parser(FileOperator):
         text = f.read()
         f.close()
         params = dict(self.defaults)
-        i, j = 1, 1
+        i, j = 1, 0
         k = 0
         while k < len(text):
             if text[k] == '<':
@@ -96,6 +97,7 @@ class Parser(FileOperator):
                         k += 1
                     self._update_params(text[m: k], params)
             else:
+                char = text[k]
                 char_el = {
                     'char': text[k],
                     'index': str(i) + '.' + str(j),
@@ -105,7 +107,7 @@ class Parser(FileOperator):
                 j += 1
                 if text[k] == '\n':
                     i += 1
-                    j = 1
+                    j = 0
             k += 1
         return char_list
 
@@ -154,20 +156,9 @@ class Serializer(FileOperator):
 
 def test():
     """Function to test classes' operability"""
-    s = Serializer()
-    text = [{'char': 'a',
-             'index': '1.1',
-             'tags': {'Arial.16.bold.italic.1.1'}},
-            {'char': '\n',
-             'index': '1.2',
-             'tags': {'Arial.16.bold.italic.1.1'}},
-            {'char': 'c',
-             'index': '2.1',
-             'tags': {'Arial.14.bold.italic.0.1'}}]
-    s.serialize('test.txt', text)
     p = Parser()
     res = p.parse('test.txt')
-    assert res == text
+    print(res)
 
 
 if __name__ == '__main__':
