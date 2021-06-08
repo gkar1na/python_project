@@ -6,6 +6,10 @@ date_format = '%d.%m.%y %H:%M:%S'
 path_to_errors = 'errors'
 path_to_logging = 'logging'
 
+file_format = ('Python project file', '*.ppf*')
+open_file_name = None
+save_file_name = None
+
 default_font = 'Calibri.12.normal.roman.0.0'
 default_foreground_color = '#000000'
 default_background_color = '#ffffff'

@@ -8,7 +8,6 @@ from right_menu import RightMenu
 import pickle
 import os
 import db
-import subprocess
 import files
 
 
@@ -31,7 +30,6 @@ class Pad(tk.Frame):
         # Configure the text field
         # Configure default font from config
         self.text_field.configure(font=create.font(config.default_font))
-        self.text_field.insert("end", "Test text\nqwertyuiop\nasdfghjkl\nzxcvbnm")
 
         # Configure font tags from db
         # Font ids
@@ -81,8 +79,8 @@ class Pad(tk.Frame):
         self.main_menu.add_cascade(label="Файл", menu=self.menu_item_file)
 
         self.menu_item_file.add_command(label="Открыть...", command=self.open_window)
-        self.menu_item_file.add_command(label="Создать", command=self.new_window)
         self.menu_item_file.add_command(label="Сохранить...", command=self.save_to_file)
+        self.menu_item_file.add_command(label="Создать", command=self.new_window)
 
         self.menu_item_file.add_separator()
 
@@ -155,6 +153,8 @@ class Pad(tk.Frame):
         # Right Menu initialization
         self.right_menu = RightMenu(self.root, self.text_field)
 
+        self.file = files.RenameIt(self)
+
     def close_window(self):
         """Close an old independent window."""
 
@@ -191,13 +191,12 @@ class Pad(tk.Frame):
             tag = self.text_field.tag_names(index)
             print(f'current cursor position: {index} - "{self.text_field.get(index)}", tags: {tag}')
 
-
-    def open_window(self):
+    def open_window(self, event=None):
         """Open a new independent window from an existing file."""
-        file_name = 'test.txt'
-        p = files.Parser()
-        input_data = p.parse(file_name)
+        input_data = self.file.open_file(config.open_file_name)
         print(input_data)
+        if input_data is None:
+            return
         self.text_field.delete('1.0', tk.END)
         self.right_menu.index = '1.0'
         self.right_menu.buffer_tags = []
@@ -214,8 +213,7 @@ class Pad(tk.Frame):
         print(input_data)
         print('open_window')
 
-
-    def save_to_file(self):
+    def save_to_file(self, event=None):
         """Save the text field with all information about all symbols to a new file."""
         output_data = []
         index = '1.0'
@@ -227,24 +225,25 @@ class Pad(tk.Frame):
             })
             index = self.text_field.index(f'{index}+1c')
         print(output_data)
-
-        file_name = 'test.txt'
-        s = files.Serializer()
-        s.serialize(file_name, output_data)
-
+        status = self.file.save_file(output_data, config.open_file_name)
+        if not status:
+            return
         print('save_to_file')
 
-
-    def new_window(self):
+    def new_window(self, event=None):
         """Again run main.py."""
-        # subprocess.Popen(['python3', 'main.py'])
         self.text_field.delete('1.0', tk.END)
+
 
 def create_window():
     """Create and update a new independent window."""
     root = tk.Tk()
     root.title(f"Текстовый редактор")
-    Pad(root).pack(expand=1, fill="both")
+    p = Pad(root)
+    p.pack(expand=1, fill="both")
+    root.bind('<Control-Key-s>', p.save_to_file)
+    root.bind('<Control-Key-o>', p.open_window)
+    root.bind('<Control-Key-n>', p.new_window)
     root.mainloop()
 
 
