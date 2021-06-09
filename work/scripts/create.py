@@ -19,6 +19,4 @@ def font(font_id: str):
         overstrike=overstrike
     )
 
-    print(f'LOGGING: create new font: {font_id}')
-
     return font_obj

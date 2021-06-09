@@ -73,9 +73,6 @@ class RightMenu:
         if delete:
             self.text_field.delete(tk.SEL_FIRST, tk.SEL_LAST)
 
-        print(self.buffer_selected)
-        print(self.buffer_tags)
-
     def cut(self, *args, **kwargs):
         """Cut function."""
         self.copy(delete=True)

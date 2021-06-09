@@ -2,34 +2,33 @@
 # coding: utf-8
 
 import tkinter as tk
-import config
-from datetime import datetime
+from work import config
 
 
-def family(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, new_family: str, *args):
+def family(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+           new_family: str, *args):
     """Get all the old parameters and the new family.
     Change the family to a new one.
     Return new parameters."""
     family = new_family
-    print('LOGGING: change family')
     return family, size, weight, slant, underline, overstrike
 
 
-def size(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, new_size: str, *args):
+def size(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+         new_size: str, *args):
     """Get all the old parameters and the new size.
     Resize to a new one.
     Return new parameters."""
     size = new_size
-    print('LOGGING: change size')
     return family, size, weight, slant, underline, overstrike
 
 
-def weight(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, *args):
+def weight(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+           *args):
     """Get all the old parameters.
     Change the weight condition.
     Return new parameters."""
     weight = 'bold' if weight == 'normal' else 'normal'
-    print('LOGGING: change weight')
     return family, size, weight, slant, underline, overstrike
 
 
@@ -41,7 +40,8 @@ def slant(text_field: tk.Text, family: str, size: str, weight: str, slant: str, 
     return family, size, weight, slant, underline, overstrike
 
 
-def underline(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, *args):
+def underline(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+              *args):
     """Get all the old parameters.
     Change the underline condition.
     Return new parameters."""
@@ -49,7 +49,8 @@ def underline(text_field: tk.Text, family: str, size: str, weight: str, slant: s
     return family, size, weight, slant, underline, overstrike
 
 
-def overstrike(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, *args):
+def overstrike(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+               *args):
     """Get all the old parameters.
     Change the overstrike condition.
     Return new parameters."""
@@ -57,7 +58,8 @@ def overstrike(text_field: tk.Text, family: str, size: str, weight: str, slant: 
     return family, size, weight, slant, underline, overstrike
 
 
-def color(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str, new_color: str, index: str, ground: str, *args):
+def color(text_field: tk.Text, family: str, size: str, weight: str, slant: str, underline: str, overstrike: str,
+          new_color: str, index: str, ground: str, *args):
     """Get all the old parameters, the new color, the symbol index and the characteristic of the color change place.
     Remove the fore/back ground color tag if it is possible
     and add new fore/back ground color text tag
@@ -73,16 +75,13 @@ def color(text_field: tk.Text, family: str, size: str, weight: str, slant: str, 
                 break
         if tag:
             text_field.tag_remove(tag, index)
-
-    except Exception as e:
-        with open(config.path_to_errors, 'a') as f:
-            print(f'{datetime.now()} - change.py - cant remove the {ground}ground color tag in color() from change.py - "{e}"', file=f)
+    except Exception:
+        pass
 
     # Add a tag in order to change the fore/back ground color
     else:
         text_field.tag_add(f'{new_color}_{ground}', index)
 
-    print('LOGGING: change color')
     # Return new parameters
     return family, size, weight, slant, underline, overstrike
 
@@ -107,12 +106,12 @@ def font(text_field: tk.Text, func, new_value=None, ground=None):
                     text_field.tag_remove(tag, index)
                 else:
                     tag = config.default_font
-            except:
+            except Exception:
                 tag = config.default_font
-            family, size, weight, slant, underline, overstrike = func(text_field, *map(str, tag.split('.')), new_value, index, ground)
+            family, size, weight, slant, underline, overstrike = func(text_field, *map(str, tag.split('.')), new_value,
+                                                                      index, ground)
             tag = f'{family}.{size}.{weight}.{slant}.{underline}.{overstrike}'
             text_field.tag_add(tag, index)
             index = text_field.index(f"{index}+1c")
     except tk.TclError:
         pass
-

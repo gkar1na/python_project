@@ -1,7 +1,7 @@
-import config
+from work import config
 
 
-class FileOperator:
+class BasicConverter:
     """Basic class to configure default parameters"""
 
     _d = config.default_font.split('.')
@@ -17,7 +17,7 @@ class FileOperator:
     }
 
 
-class Parser(FileOperator):
+class Parser(BasicConverter):
     """Class to read text from file"""
 
     d_font = config.default_font
@@ -119,7 +119,7 @@ class Parser(FileOperator):
         return char_list
 
 
-class Serializer(FileOperator):
+class Serializer(BasicConverter):
     """Class to save text to file"""
 
     serializer_tags = {
