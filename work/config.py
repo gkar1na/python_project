@@ -3,7 +3,7 @@
 
 date_format = '%d.%m.%y %H:%M:%S'
 
-path_to_db = 'work/data/'
+path_to_db = '../work/data/'
 
 file_format = ('Python project file', '*.ppf*')
 open_file_name = None
