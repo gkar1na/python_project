@@ -13,12 +13,12 @@ class RightMenu:
         self.menu.add_command(label="Копировать", command=self.copy)
         self.menu.add_command(label="Вставить", command=self.paste)
 
-        self.root.bind("<Control-v>", self.paste)
-        self.root.bind("<Control-V>", self.paste)
-        self.root.bind("<Control-c>", lambda x: self.copy(False))
-        self.root.bind("<Control-C>", lambda x: self.copy(False))
-        self.root.bind("<Control-x>", self.cut)
-        self.root.bind("<Control-X>", self.cut)
+        self.root.bind_all("<Alt-v>", self.paste)
+        self.root.bind_all("<Alt-V>", self.paste)
+        self.root.bind_all("<Alt-c>", self.copy)
+        self.root.bind_all("<Alt-C>", self.copy)
+        self.root.bind("<Alt-x>", self.cut)
+        self.root.bind("<Alt-X>", self.cut)
 
         self.root.bind("<Button-2>", self.popup)
         self.root.bind("<Button-3>", self.popup)
@@ -27,8 +27,10 @@ class RightMenu:
         """Show right click menu."""
         self.menu.tk_popup(e.x_root, e.y_root)
 
-    def paste(self, flag=False, *args, **kwargs):
+    def paste(self, *args, **kwargs):
+        print('PASTE')
         """Paste function."""
+        flag = False
         if flag:
             num_index = 0
             while num_index < len(self.buffer_selected):
@@ -62,17 +64,23 @@ class RightMenu:
                 index = self.text_field.index(f'{index}+1c')
                 num_index += 1
 
-    def copy(self, delete=False, *args, **kwargs):
+    def copy(self, *args, **kwargs):
         """Copy function."""
+        print('COPY')
         self.buffer_tags = []
         self.buffer_selected = self.text_field.selection_get()
         index = self.text_field.index(f"{tk.SEL_FIRST}")
         while self.text_field.compare(index, '<', tk.SEL_LAST):
             self.buffer_tags.append(self.text_field.tag_names(f'{index}'))
             index = self.text_field.index(f"{index}+1c")
-        if delete:
-            self.text_field.delete(tk.SEL_FIRST, tk.SEL_LAST)
 
     def cut(self, *args, **kwargs):
         """Cut function."""
-        self.copy(delete=True)
+        print('CUT')
+        self.buffer_tags = []
+        self.buffer_selected = self.text_field.selection_get()
+        index = self.text_field.index(f"{tk.SEL_FIRST}")
+        while self.text_field.compare(index, '<', tk.SEL_LAST):
+            self.buffer_tags.append(self.text_field.tag_names(f'{index}'))
+            index = self.text_field.index(f"{index}+1c")
+            self.text_field.delete(tk.SEL_FIRST, tk.SEL_LAST)
