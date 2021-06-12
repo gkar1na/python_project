@@ -35,8 +35,8 @@ class Parser(BasicConverter):
         'cf': ['f_color', str]
     }
 
-    def _params_to_tags(self, params: dict):
-        """Converts parameters dict into set of string tags"""
+    def params_to_tags(self, params: dict):
+        """Convert parameters dict into set of string tags"""
         _params = dict(params)
         tags = set()
         _params['bold'] = 'bold' if _params['bold'] else 'normal'
@@ -50,8 +50,8 @@ class Parser(BasicConverter):
             tags.add(_params['b_color'] + '_back')
         return tags
 
-    def _update_params(self, tag: str, params: dict):
-        """Changes character parameters according to given tag"""
+    def update_params(self, tag: str, params: dict):
+        """Change character parameters according to given tag"""
         try:
             key, value = tag.split(':')
             param, func = self.parser_tags[key]
@@ -61,7 +61,7 @@ class Parser(BasicConverter):
         return 1
 
     def parse(self, text: str):
-        """Reads text from file and converts it into character list"""
+        """Convert text into character list"""
         char_list = []
         params = dict(self.defaults)
         i, j = 1, 0
@@ -72,7 +72,7 @@ class Parser(BasicConverter):
                     char_el = {
                         'char': text[k + 1],
                         'index': str(i) + '.' + str(j),
-                        'tags': self._params_to_tags(params)
+                        'tags': self.params_to_tags(params)
                     }
                     char_list.append(char_el)
                     k += 1
@@ -81,7 +81,7 @@ class Parser(BasicConverter):
                     m = k + 1
                     while text[k] != '>':
                         k += 1
-                    if not self._update_params(text[m: k], params):
+                    if not self.update_params(text[m: k], params):
                         return None
             elif text[k] == '>':
                 if k == 0 or text[k - 1] != '<':
@@ -91,7 +91,7 @@ class Parser(BasicConverter):
                 char_el = {
                     'char': text[k],
                     'index': str(i) + '.' + str(j),
-                    'tags': self._params_to_tags(params)
+                    'tags': self.params_to_tags(params)
                 }
                 char_list.append(char_el)
                 j += 1
@@ -102,8 +102,9 @@ class Parser(BasicConverter):
         return char_list
 
     def parse_from_txt(self, text: str):
+        """Convert text from txt files into character list"""
         char_list = []
-        tags = self._params_to_tags(self.defaults)
+        tags = self.params_to_tags(self.defaults)
         i, j = 1, 0
         for char in text:
             char_el = {
@@ -133,8 +134,8 @@ class Serializer(BasicConverter):
         'f_color': '<cf:%s>'
     }
 
-    def _tags_to_params(self, tags: set):
-        """Converts set of string tags into parameters dict"""
+    def tags_to_params(self, tags: set):
+        """Convert set of string tags into parameters dict"""
         params = dict(self.defaults)
         for tag in tags:
             if tag == 'sel':
@@ -156,11 +157,11 @@ class Serializer(BasicConverter):
         return params
 
     def serialize(self, char_list: list):
-        """Converts character list into text and saves it to file"""
-        cur_params = self._tags_to_params(set())
+        """Convert character list into text"""
+        cur_params = self.tags_to_params(set())
         text = []
         for char_el in char_list:
-            char_params = self._tags_to_params(char_el['tags'])
+            char_params = self.tags_to_params(char_el['tags'])
             for param in char_params:
                 if char_params[param] != cur_params[param]:
                     cur_params[param] = char_params[param]
@@ -173,5 +174,6 @@ class Serializer(BasicConverter):
         return text
 
     def serialize_to_txt(self, char_list: list):
+        """Convert character list into text for txt files"""
         text = ''.join([char['char'] for char in char_list])
         return text
