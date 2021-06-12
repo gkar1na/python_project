@@ -83,4 +83,4 @@ class RightMenu:
         while self.text_field.compare(index, '<', tk.SEL_LAST):
             self.buffer_tags.append(self.text_field.tag_names(f'{index}'))
             index = self.text_field.index(f"{index}+1c")
-            self.text_field.delete(tk.SEL_FIRST, tk.SEL_LAST)
+        self.text_field.delete(tk.SEL_FIRST, tk.SEL_LAST)
