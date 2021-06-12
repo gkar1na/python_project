@@ -5,8 +5,10 @@ import tkinter.font
 
 
 def font(font_id: str):
-    """Get the font id.
-    Return the font from db as tkinter.font.Font object."""
+    """
+    Get the font id.
+    Create the font as tkinter.font.Font object.
+    """
 
     family, size, weight, slant, underline, overstrike = map(str, font_id.split('.'))
 

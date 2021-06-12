@@ -11,8 +11,10 @@ import os
 
 class Frame(tk.Frame):
     def __init__(self, root: tk.Tk, *args, **kwargs):
-        """Create a toolbar, the text field and the scrollbar.
-        Configure the text field."""
+        """
+        Create a toolbar, the text field and the scrollbar.
+        Configure the text field.
+        """
         tk.Frame.__init__(self, root, *args, **kwargs)
 
         # Detach the window root
@@ -160,6 +162,7 @@ class Frame(tk.Frame):
         # Right Menu initialization
         self.right_menu = RightMenu(self.root, self.text_field)
 
+        # File management initialization
         self.file = files.FileOperator(self)
 
     def open_window(self):

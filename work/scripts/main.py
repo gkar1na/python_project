@@ -27,7 +27,7 @@ class Pad(base.Frame):
         about_label.pack()
 
     def open_window(self, event: tk.Event = None):
-        """Open a new independent window from an existing file."""
+        """Fill text field from an existing file."""
         input_data = self.file.open_file(config.open_file_name)
         print(input_data)
         if input_data is None:
@@ -46,7 +46,7 @@ class Pad(base.Frame):
         print('open_window')
 
     def save_to_file(self, event: tk.Event = None):
-        """Save the text field with all information about all symbols to a new file."""
+        """Save the text field with all information about all symbols to a file."""
         output_data = []
         index = '1.0'
         while self.text_field.compare(index, '<', 'end'):
@@ -63,7 +63,7 @@ class Pad(base.Frame):
         print('save_to_file')
 
     def new_window(self, event: tk.Event = None):
-        """Again run files.py."""
+        """Clear text field"""
         self.text_field.delete('1.0', tk.END)
 
 
