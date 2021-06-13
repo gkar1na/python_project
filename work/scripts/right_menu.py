@@ -3,7 +3,7 @@ import tkinter as tk
 
 class RightMenu:
     """Class for copy-paste-cut functions."""
-    def __init__(self, root, text_field: tk.Text):
+    def __init__(self, root: tk.Tk, text_field: tk.Text):
         self.root = root
         self.text_field = text_field
         self.buffer_tags = []
@@ -28,7 +28,6 @@ class RightMenu:
         self.menu.tk_popup(e.x_root, e.y_root)
 
     def paste(self, *args, **kwargs):
-        print('PASTE')
         """Paste function."""
         flag = False
         if flag:
@@ -66,7 +65,6 @@ class RightMenu:
 
     def copy(self, *args, **kwargs):
         """Copy function."""
-        print('COPY')
         self.buffer_tags = []
         self.buffer_selected = self.text_field.selection_get()
         index = self.text_field.index(f"{tk.SEL_FIRST}")
@@ -76,7 +74,6 @@ class RightMenu:
 
     def cut(self, *args, **kwargs):
         """Cut function."""
-        print('CUT')
         self.buffer_tags = []
         self.buffer_selected = self.text_field.selection_get()
         index = self.text_field.index(f"{tk.SEL_FIRST}")
