@@ -18,7 +18,7 @@ class BasicConverter:
 
 
 class Parser(BasicConverter):
-    """Class to read text from file"""
+    """Class to convert text from file into character list"""
 
     d_font = config.default_font
     d_f_color = config.default_foreground_color
@@ -139,7 +139,7 @@ class Parser(BasicConverter):
 
 
 class Serializer(BasicConverter):
-    """Class to save text to file"""
+    """Class to convert character list into text for file"""
 
     serializer_tags = {
         'font': '<f:%s>',

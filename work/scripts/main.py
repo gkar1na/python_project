@@ -7,6 +7,7 @@ from work import config
 
 
 class Pad(base.Frame):
+    """Extend parent class functional"""
 
     def close_window(self):
         """Close an old independent window."""
@@ -69,7 +70,7 @@ def create_window():
     root.title(f"Текстовый редактор")
     p = Pad(root)
     p.pack(expand=1, fill="both")
-    root.bind('<Control-Key-s>', p.save_to_file)
-    root.bind('<Control-Key-o>', p.open_window)
-    root.bind('<Control-Key-n>', p.new_window)
+    root.bind('<Alt-Key-s>', p.save_to_file)
+    root.bind('<Alt-Key-o>', p.open_window)
+    root.bind('<Alt-Key-n>', p.new_window)
     root.mainloop()
