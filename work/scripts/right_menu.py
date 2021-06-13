@@ -3,7 +3,7 @@ import tkinter as tk
 
 class RightMenu:
     """Class for copy-paste-cut functions."""
-    def __init__(self, root, text_field: tk.Text):
+    def __init__(self, root: tk.Tk, text_field: tk.Text):
         self.root = root
         self.text_field = text_field
         self.buffer_tags = []
