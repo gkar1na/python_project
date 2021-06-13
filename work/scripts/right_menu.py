@@ -13,13 +13,6 @@ class RightMenu:
         self.menu.add_command(label="Копировать", command=self.copy)
         self.menu.add_command(label="Вставить", command=self.paste)
 
-        self.root.bind_all("<Alt-v>", self.paste)
-        self.root.bind_all("<Alt-V>", self.paste)
-        self.root.bind_all("<Alt-c>", self.copy)
-        self.root.bind_all("<Alt-C>", self.copy)
-        self.root.bind("<Alt-x>", self.cut)
-        self.root.bind("<Alt-X>", self.cut)
-
         self.root.bind("<Button-2>", self.popup)
         self.root.bind("<Button-3>", self.popup)
 
