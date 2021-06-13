@@ -39,8 +39,8 @@ class Parser(BasicConverter):
         """Convert parameters dict into set of string tags"""
         _params = dict(params)
         tags = set()
-        _params['bold'] = 'bold' if _params['bold'] else 'normal'
-        _params['italic'] = 'italic' if _params['italic'] else 'roman'
+        _params['bold'] = 'bold' if _params['bold'] == '1' else 'normal'
+        _params['italic'] = 'italic' if _params['italic'] == '1' else 'roman'
         font = '.'.join(map(str, [_params[k] for k in list(_params)[:-2]]))
         if font != self.d_font:
             tags.add(font)
