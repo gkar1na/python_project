@@ -29,7 +29,6 @@ class Pad(base.Frame):
     def open_window(self, event: tk.Event = None):
         """Fill text field from an existing file."""
         input_data = self.file.open_file(config.open_file_name)
-        print(input_data)
         if input_data is None:
             return
         self.text_field.delete('1.0', tk.END)
@@ -43,7 +42,6 @@ class Pad(base.Frame):
 
         self.right_menu.buffer_selected = ''.join(self.right_menu.buffer_selected)
         self.right_menu.paste(True)
-        print('open_window')
 
     def save_to_file(self, event: tk.Event = None):
         """Save the text field with all information about all symbols to a file."""
@@ -56,11 +54,9 @@ class Pad(base.Frame):
                 'tags': self.text_field.tag_names(index)
             })
             index = self.text_field.index(f'{index}+1c')
-        print(output_data)
         status = self.file.save_file(output_data, config.open_file_name)
         if not status:
             return
-        print('save_to_file')
 
     def new_window(self, event: tk.Event = None):
         """Clear text field"""

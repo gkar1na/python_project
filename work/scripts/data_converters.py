@@ -7,11 +7,11 @@ class BasicConverter:
     _d = config.default_font.split('.')
     defaults = {
         'font': _d[0],
-        'size': int(_d[1]),
-        'bold': int(_d[2] != 'normal'),
-        'italic': int(_d[3] != 'roman'),
-        'underline': int(_d[4]),
-        'overstrike': int(_d[5]),
+        'size': _d[1],
+        'bold': str(int(_d[2] != 'normal')),
+        'italic': str(int(_d[3] != 'roman')),
+        'underline': _d[4],
+        'overstrike': _d[5],
         'f_color': config.default_foreground_color,
         'b_color': config.default_background_color
     }
@@ -25,14 +25,14 @@ class Parser(BasicConverter):
     d_b_color = config.default_background_color
 
     parser_tags = {
-        'f': ['font', str],
-        's': ['size', int],
-        'b': ['bold', int],
-        'i': ['italic', int],
-        'u': ['underline', int],
-        'o': ['overstrike', int],
-        'cb': ['b_color', str],
-        'cf': ['f_color', str]
+        'f': ['font', config.families],
+        's': ['size', config.sizes],
+        'b': ['bold', config.weights],
+        'i': ['italic', config.slants],
+        'u': ['underline', config.underlines],
+        'o': ['overstrike', config.overstrikes],
+        'cb': ['b_color', config.colors],
+        'cf': ['f_color', config.colors]
     }
 
     def params_to_tags(self, params: dict):
@@ -54,8 +54,26 @@ class Parser(BasicConverter):
         """Change character parameters according to given tag"""
         try:
             key, value = tag.split(':')
-            param, func = self.parser_tags[key]
-            params[param] = func(value)
+            if key == 'b':
+                if value == '1':
+                    v = 'bold'
+                elif value == '0':
+                    v = 'normal'
+                else:
+                    v = 'wrong'
+            elif key == 'i':
+                if value == '1':
+                    v = 'italic'
+                elif value == '0':
+                    v = 'roman'
+                else:
+                    v = 'wrong'
+            else:
+                v = value
+            param, variants = self.parser_tags[key]
+            if v not in variants:
+                return 0
+            params[param] = value
         except (KeyError, ValueError) as e:
             return 0
         return 1
@@ -89,13 +107,13 @@ class Parser(BasicConverter):
             else:
                 char = text[k]
                 char_el = {
-                    'char': text[k],
+                    'char': char,
                     'index': str(i) + '.' + str(j),
                     'tags': self.params_to_tags(params)
                 }
                 char_list.append(char_el)
                 j += 1
-                if text[k] == '\n':
+                if char == '\n':
                     i += 1
                     j = 0
             k += 1
@@ -125,11 +143,11 @@ class Serializer(BasicConverter):
 
     serializer_tags = {
         'font': '<f:%s>',
-        'size': '<s:%d>',
-        'bold': '<b:%d>',
-        'italic': '<i:%d>',
-        'underline': '<u:%d>',
-        'overstrike': '<o:%d>',
+        'size': '<s:%s>',
+        'bold': '<b:%s>',
+        'italic': '<i:%s>',
+        'underline': '<u:%s>',
+        'overstrike': '<o:%s>',
         'b_color': '<cb:%s>',
         'f_color': '<cf:%s>'
     }
@@ -149,11 +167,11 @@ class Serializer(BasicConverter):
             else:
                 p = tag.split('.')
                 params['font'] = p[0]
-                params['size'] = int(p[1])
-                params['bold'] = int(p[2] != 'normal')
-                params['italic'] = int(p[3] != 'roman')
-                params['underline'] = int(p[4])
-                params['overstrike'] = int(p[5])
+                params['size'] = p[1]
+                params['bold'] = str(int(p[2] != 'normal'))
+                params['italic'] = str(int(p[3] != 'roman'))
+                params['underline'] = p[4]
+                params['overstrike'] = p[5]
         return params
 
     def serialize(self, char_list: list):
