@@ -115,6 +115,7 @@ class FileOperator:
                 self.root.root.title(f"Текстовый редактор (%s)" % filename)
         else:
             char_list = self.parser.parse_from_txt(text)
+            self.clear_last_file()
         return char_list
 
     def save_file(self, char_list: list):

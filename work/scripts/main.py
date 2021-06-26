@@ -91,7 +91,7 @@ class Pad(base.Frame):
         self.text_field.mark_set(tk.INSERT, "1.0")
         self.text_field.see(tk.INSERT)
 
-    def text_changed(self, changed=True):
+    def text_changed(self, changed: bool = True):
         """Change 'changed' status of the text."""
         if changed:
             if not self.changed:
