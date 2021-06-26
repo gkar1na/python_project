@@ -11,7 +11,12 @@ class Pad(base.Frame):
 
     def close_window(self):
         """Close an old independent window."""
-
+        if self.changed:
+            res = self.file.save_on_quit()
+            if res == 0:
+                return
+            elif res == 1:
+                self.save_to_file()
         self.root.destroy()
 
     def about(self):
@@ -32,6 +37,7 @@ class Pad(base.Frame):
         input_data = self.file.open_file(config.open_file_name)
         if input_data is None:
             return
+        self.changed = False
         self.text_field.delete('1.0', tk.END)
         self.right_menu.index = '1.0'
         self.right_menu.buffer_tags = []
@@ -44,8 +50,8 @@ class Pad(base.Frame):
         self.right_menu.buffer_selected = ''.join(self.right_menu.buffer_selected)
         self.right_menu.paste(True)
 
-    def save_to_file(self):
-        """Save the text field with all information about all symbols to a file."""
+    def get_output_data(self):
+        """Create character list to save to file."""
         output_data = []
         index = '1.0'
         while self.text_field.compare(index, '<', 'end'):
@@ -55,16 +61,55 @@ class Pad(base.Frame):
                 'tags': self.text_field.tag_names(index)
             })
             index = self.text_field.index(f'{index}+1c')
-        status = self.file.save_file(output_data, config.open_file_name)
+        return output_data
+
+    def save_to_file(self):
+        """Save the text field with all information about all symbols to current working file."""
+        output_data = self.get_output_data()
+        status = self.file.save_file(output_data)
         if not status:
             return
+        self.text_changed(False)
+
+    def save_as_file(self):
+        """Save the text field with all information about all symbols to chosen file."""
+        output_data = self.get_output_data()
+        status = self.file.save_as_file(output_data, config.save_file_name)
+        if not status:
+            return
+        self.changed = False
 
     def new_window(self):
-        """Clear text field"""
+        """Clear text field."""
         self.text_field.delete('1.0', tk.END)
+        self.file.clear_last_file()
+        self.changed = False
 
-    def bind_parser(self, event: tk.Event):
-        """Binds some keys to functions"""
+    def select_all(self):
+        """Select all text."""
+        self.text_field.tag_add(tk.SEL, "1.0", tk.END)
+        self.text_field.mark_set(tk.INSERT, "1.0")
+        self.text_field.see(tk.INSERT)
+
+    def text_changed(self, changed=True):
+        """Change 'changed' status of the text."""
+        if changed:
+            if not self.changed:
+                self.changed = True
+                title = self.root.title()
+                parts = title.rsplit(maxsplit=1)
+                self.root.title(parts[0] + ' *' + parts[1])
+        else:
+            if self.changed:
+                self.changed = False
+                title = self.root.title()
+                parts = title.rsplit(maxsplit=1)
+                if parts[1][0] == '(':
+                    parts[1] = '*' + parts[1]
+                self.root.title(parts[0] + ' ' + parts[1][1:])
+
+    def bind_alt_parser(self, event: tk.Event):
+        """Bind some <alt+key> to functions."""
         key = event.keycode
         if key == 83:
             self.save_to_file()
@@ -78,13 +123,32 @@ class Pad(base.Frame):
             self.right_menu.copy()
         elif key == 86:
             self.right_menu.paste()
+        elif key == 65:
+            self.select_all()
+
+    def bind_alt_shift_parser(self, event: tk.Event):
+        """Bind some <alt+shift+key> to functions."""
+        if event.keycode == 83:
+            self.save_as_file()
+
+    def bind_all_parser(self, event: tk.Event):
+        """Bind some keys to functions."""
+        key = event.keycode
+        exceptions = list(range(112, 124)) + list(range(37, 41)) + [16, 17, 18, 20, 45, 91]
+        if key == 27:
+            self.text_field.tag_remove(tk.SEL, "1.0", tk.END)
+        elif key not in exceptions:
+            self.text_changed()
 
 
 def create_window():
     """Create and update a new independent window."""
     root = tk.Tk()
-    root.title(f"Текстовый редактор")
+    root.title("Текстовый редактор (new_file)")
     p = Pad(root)
     p.pack(expand=1, fill="both")
-    root.bind('<Alt-Key>', p.bind_parser)
+    root.bind('<Alt-Key>', p.bind_alt_parser)
+    root.bind('<Alt-Shift-Key>', p.bind_alt_shift_parser)
+    root.bind('<Key>', p.bind_all_parser)
+    root.protocol("WM_DELETE_WINDOW", p.close_window)
     root.mainloop()

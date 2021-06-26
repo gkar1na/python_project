@@ -78,6 +78,7 @@ class Frame(tk.Frame):
 
         self.menu_item_file.add_command(label="Открыть...", command=self.open_window)
         self.menu_item_file.add_command(label="Сохранить...", command=self.save_to_file)
+        self.menu_item_file.add_command(label="Сохранить как...", command=self.save_as_file)
         self.menu_item_file.add_command(label="Создать", command=self.new_window)
 
         self.menu_item_file.add_separator()
@@ -164,11 +165,15 @@ class Frame(tk.Frame):
 
         # File management initialization
         self.file = files.FileOperator(self)
+        self.changed = False
 
     def open_window(self):
         pass
 
     def save_to_file(self):
+        pass
+
+    def save_as_file(self):
         pass
 
     def new_window(self):

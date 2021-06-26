@@ -188,7 +188,7 @@ class Serializer(BasicConverter):
             if char == '<' or char == '>':
                 text.append('<')
             text.append(char)
-        text = ''.join(text)
+        text = ''.join(text[:-1])
         return text
 
     def serialize_to_txt(self, char_list: list):
