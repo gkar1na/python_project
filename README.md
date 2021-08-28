@@ -1,2 +1,1 @@
-# ded_python
-grandfather python
+# python project 
